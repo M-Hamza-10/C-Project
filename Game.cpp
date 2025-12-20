@@ -1,8 +1,5 @@
 #include "Game.h"
 
-
-
-
 Game::Game()
 {
     this->initWindow();
@@ -40,7 +37,7 @@ void Game::initMap()
 
 void Game::initPlayer1()
 {
-    this->player1 = new Player(windowWidth,windowHeight,this->Map,"Sprites/Player/run.png",93,178,11,100.f , sf::Keyboard::A,sf::Keyboard::D , 1);
+    this->player1 = new Player(windowWidth,windowHeight,this->Map,"Sprites/Player/run.png",93,178,11,100.f , sf::Keyboard::A,sf::Keyboard::D , 1 );
     this->player2 = new Player(windowWidth,windowHeight,this->Map,"Sprites/Player/player_2.png",128,267,11,160.f , sf::Keyboard::Left, sf::Keyboard::Right , 2);
 }
 
@@ -120,19 +117,36 @@ void Game::initText()
     p2HealthFront.setFillColor(sf::Color::Blue);
     p2HealthFront.setPosition(420.f, 20.f);
 }
-void Game::applyPowerUp(PowerType type, Player& target){
+void Game::applyPowerUp(PowerType type, Player& target , int id){
+    
+        float randomX = roadLeft + static_cast<float>(rand()) / RAND_MAX *(roadRight - roadLeft);
+        float randomZ = spawnZMin + static_cast<float>(rand()) / RAND_MAX *(spawnZMax - spawnZMin);
+        
     switch (type)
     {   
-        std::cout << "PowerUpApplied but not technically";
-        std::cout << "Applied on player " << player1;
-        std::cout << "Applied on player " << player2;
-        // case PowerType::Confusion:
-        //     target.applyConfusion(1.5f);
-        //     break;
+        case PowerType::Monster:
+        power->spawnMonster(randomX,randomZ);
+        break;
 
-        // case PowerType::Net:
-        //     target.blockMovement(1.0f);
-        //     break;
+        case PowerType::Heal:
+
+            if(id == 1)
+                player1->addHealth(10);
+            else
+                player2->addHealth(10);
+            break;
+
+        case::PowerType::lightning:
+            target.poison(0.f);
+            target.takeDamage(20);
+            if(id == 1)
+                player1->addScore(20);
+            else
+                player2->addScore(20);
+            break;
+
+        default:
+            break;
     }
     }
 
@@ -154,20 +168,27 @@ void Game::update()
     this->player2->update(dt);
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
-    {
+    {   
+        
+       
         if (player1->hasPowerUp())
         {
+        std::cout << "Power trying to apply";
         PowerType p = player1->usePowerUp();
-        applyPowerUp(p, *player2);
+        if (p != PowerType::NONE)
+            applyPowerUp(p, *player2 , 1);
         }
     }
 
        if (sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
-    {
+    {   
+        
         if (player2->hasPowerUp())
         {
+        std::cout << "Power trying to apply";
         PowerType p = player2->usePowerUp();
-        applyPowerUp(p, *player1);
+        if (p != PowerType::NONE)
+        applyPowerUp(p, *player1 , 2);
         }
     }
 

@@ -136,7 +136,7 @@ void obstacles::update(float dt ,const int winHeight)
 
     //Moves the obstacle forward
     for (auto& s : sprite)
-{
+    {
     // Move forward in WORLD space
     s.worldZ -= speed * dt;
 
@@ -161,14 +161,12 @@ void obstacles::update(float dt ,const int winHeight)
         s.animTimer = 0.f;
         s.currentFrame = (s.currentFrame + 1) % s.frameCount;
 
-        for (auto& s : sprite)
-        {
             s.sprite.setTextureRect(sf::IntRect(
                 s.currentFrame * s.frameWidth ,
                 0,
                 s.frameWidth,
                 s.frameHeight));
-        }
+        
     }
 
     // Project every frame

@@ -5,7 +5,8 @@
 #include <SFML\Window.hpp>
 #include <SFML\Network.hpp>
 #include "map.h"
-#include "Powerup.h"
+#include "PowerType.h"
+#include <vector>
 
 
 class Player
@@ -14,6 +15,8 @@ class Player
       // Player Addition
     sf::Texture playerTex;
     sf::Sprite player;
+    sf::Texture lightning;
+    sf::Sprite light;
     // sf::Texture player2Tex;
     // sf::Sprite player2;
     map *Map;
@@ -43,10 +46,8 @@ class Player
 
     // float player2X = playerX - 3.0f;   // horizontal offset relative to center
     // float player2Z = 160.f;
-
-    // Animation
  
-
+    
     int winWidth;
     int winHeight;
     float frameWidth ; //93
@@ -73,7 +74,8 @@ class Player
            int frames,
            float startZ,
           sf::Keyboard::Key LeftKey,
-          sf::Keyboard::Key RightKey,int ID);
+          sf::Keyboard::Key RightKey,int ID
+        );
 
     
     void update(float dt);
@@ -83,6 +85,7 @@ class Player
     int getScore() const;
 
     void takeDamage(int dmg);
+    void addHealth(int life);
     void poison(float dt);
     void loseControl(float dt);
 

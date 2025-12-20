@@ -45,10 +45,16 @@ class Game
     void initPlayer1();
     void initobstacles();
     void initPowerup();
-    void applyPowerUp(PowerType type, Player& target);
+    void applyPowerUp(PowerType type, Player& target , int id);
 
 
     public:
+
+    //Monster Deploy Variables
+    float roadLeft  = -250.f;
+    float roadRight = 250.f;
+    float spawnZMin = 200.f;
+    float spawnZMax = 400.f;
     //constructors
     Game();
     //Destructor

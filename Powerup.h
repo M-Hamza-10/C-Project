@@ -4,17 +4,14 @@
 #include <SFML\System.hpp>
 #include <SFML\Window.hpp>
 #include <SFML\Network.hpp>
+#include "PowerType.h"
 #include "player.h"
-
-enum class PowerType{
-    icon,
-    lightning
-};
+#include "map.h"
 
 class Powers{
     private:
 
-         struct PowerData
+      struct PowerData
     {   
     sf::Sprite powerup;
     float worldX;
@@ -29,19 +26,29 @@ class Powers{
     float animSpeed;
     int frameWidth;
     int frameHeight;
-
-    bool collected = false;
     
     };
+    float smoketimer = 0.f;
+    bool smoked = false;
     
     map* Map;
     std::vector<PowerData> powerup;
     sf::Texture powerTex;
 
+    sf::Texture smokeTex;
+    sf::Sprite smoke;
     sf::Clock spawnClock;
     float spawnInterval = 5.0f;
     float speed;
     float maxWorldZ = 500.f;
+
+    //Smoke Animation
+    int frameCount = 6; //6
+    int currentFrame = 0;
+    float animTimer = 0.f;
+    float animSpeed = 0.5f;
+    float frameWidth = 100.f;//add
+    int frameHeight = 189;//add
 
     public:
     //constructor
@@ -55,7 +62,9 @@ class Powers{
     //Functions
     void randomSpawn();
     void spawnIcon(float worldX , float worldZ);
+    void spawnMonster(float worldX , float worldZ);
     void animate(float dt);
+    void animateSmoke(float dt);
     void checkPickup(Player& player , float dt);
     void update(float dt ,const int window);
     void draw(sf::RenderWindow& window);
