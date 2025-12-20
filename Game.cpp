@@ -1,6 +1,6 @@
 #include "Game.h"
-#include "map.h"
-#include "player.h"
+
+
 
 
 Game::Game()
@@ -10,6 +10,7 @@ Game::Game()
     this->initPlayer1();
     this->initobstacles();
     this->initText();
+    this->initPowerup();
     
     srand(static_cast<unsigned>(time(nullptr)));
 
@@ -21,6 +22,7 @@ Game::~Game()
     delete this->player1;
     delete this->player2;
     delete this->Obstacle;
+    delete this->power;
 }
 
 void Game::initWindow()
@@ -45,11 +47,17 @@ void Game::initPlayer1()
 void Game::initobstacles()
 {
     this->Obstacle = new obstacles(windowWidth,windowHeight,this->Map);
-    //spawn random spikes
+    //spawn random obstacles
     float pos_x , pos_y;
     
 }
-
+void Game::initPowerup()
+{
+    this->power = new Powers(windowWidth,windowHeight,this->Map);
+    //spawn random icons
+    float pos_x , pos_y;
+    
+}
 void Game::pollEvents()
 {
      
@@ -112,6 +120,21 @@ void Game::initText()
     p2HealthFront.setFillColor(sf::Color::Blue);
     p2HealthFront.setPosition(420.f, 20.f);
 }
+void Game::applyPowerUp(PowerType type, Player& target){
+    switch (type)
+    {   
+        std::cout << "PowerUpApplied but not technically";
+        std::cout << "Applied on player " << player1;
+        std::cout << "Applied on player " << player2;
+        // case PowerType::Confusion:
+        //     target.applyConfusion(1.5f);
+        //     break;
+
+        // case PowerType::Net:
+        //     target.blockMovement(1.0f);
+        //     break;
+    }
+    }
 
 
 const bool Game::running() const
@@ -126,12 +149,35 @@ void Game::update()
     this-> pollEvents();
     float dt = deltaClock.restart().asSeconds();
     this-> Map->update(dt);
-    this->player2->update(dt);
+    
     this->player1->update(dt);
+    this->player2->update(dt);
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+    {
+        if (player1->hasPowerUp())
+        {
+        PowerType p = player1->usePowerUp();
+        applyPowerUp(p, *player2);
+        }
+    }
+
+       if (sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))
+    {
+        if (player2->hasPowerUp())
+        {
+        PowerType p = player2->usePowerUp();
+        applyPowerUp(p, *player1);
+        }
+    }
+
     
     this->Obstacle->update(dt , windowHeight);
-    Obstacle->collisonDetection(*player1);
-    Obstacle->collisonDetection(*player2);
+    Obstacle->collisonDetection(*player1 ,dt);
+    Obstacle->collisonDetection(*player2,dt);
+    this->power->update(dt,windowHeight);
+    power->checkPickup(*player1,dt);
+    power->checkPickup(*player2,dt);
     
     //First converts the health int to string then appends the string like 80 to '80'
     p1HealthText.setString("P1 Health: " );
@@ -152,8 +198,10 @@ void Game::render()
     //dereference the window
     this->Map->draw(*Window);
     this->Obstacle->draw(*Window);
-    this->player2->draw(*Window);
+    this->power->draw(*Window);
     this->player1->draw(*Window);
+    this->player2->draw(*Window);
+    
     
     Window->draw(p1HealthText);
     Window->draw(p1ScoreText);

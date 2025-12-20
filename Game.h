@@ -4,9 +4,11 @@
 #include <SFML\System.hpp>
 #include <SFML\Window.hpp>
 #include <SFML\Network.hpp>
+#include <iostream>
 #include "map.h"
 #include "player.h"
 #include "obstacles.h"
+#include "Powerup.h"
 
 
 
@@ -20,7 +22,9 @@ class Game
     Player *player1;
     Player *player2;
     obstacles* Obstacle;
-
+    Powers* power;
+    PowerType  icon;
+    
     sf::RenderWindow* Window;
     sf::Event event;
     sf::Clock deltaClock;
@@ -40,6 +44,9 @@ class Game
     void initMap();
     void initPlayer1();
     void initobstacles();
+    void initPowerup();
+    void applyPowerUp(PowerType type, Player& target);
+
 
     public:
     //constructors
