@@ -12,11 +12,13 @@ using namespace std;
 Game game;
 int main()
 {
+
     while(game.running())
 {
     game.update();
     game.render();
 }
+
 
 
 

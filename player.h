@@ -5,6 +5,8 @@
 #include <SFML\Window.hpp>
 #include <SFML\Network.hpp>
 #include "map.h"
+#include "PowerType.h"
+#include <vector>
 
 
 class Player
@@ -13,13 +15,14 @@ class Player
       // Player Addition
     sf::Texture playerTex;
     sf::Sprite player;
-    // sf::Texture player2Tex;
-    // sf::Sprite player2;
+    sf::Texture lightning;
+    sf::Sprite light;
+
     map *Map;
 
     sf::Keyboard::Key moveLeftKey;
     sf::Keyboard::Key moveRightKey;
-
+    std::vector<PowerType> inventory;
     int health;
     int score;
     float playerX ;   // horizontal offset relative to center
@@ -30,7 +33,10 @@ class Player
     bool isInvincible = false;
     float invincibleTimer = 0.f;
     float invincibleDuration = 3.0f; // seconds
-
+    bool poisoned = false;
+    bool confused = false;
+    float confuse_timer = 0.f;
+    float poison_timer = 0.f;
     float blinkTimer = 0.f;
     float blinkInterval = 0.1f; // blink speed
     bool visible = true;
@@ -39,10 +45,8 @@ class Player
 
     // float player2X = playerX - 3.0f;   // horizontal offset relative to center
     // float player2Z = 160.f;
-
-    // Animation
  
-
+    
     int winWidth;
     int winHeight;
     float frameWidth ; //93
@@ -53,15 +57,7 @@ class Player
     float animSpeed = 0.08f; // smaller = faster
     int moveSpeed;
 
-    // int frame2Height = 267;
-    // float frame2Width = 128;
-    // int frameCount2 = 11;
-    // int currentFrame2 = 0;
-    // float animTimer2 = 0.f;
-    // float animSpeed2 = 0.08f;
-
     void animatePlayer(float dt);
-    // void animatePlayer2(float dt);
 
     sf::Vector2f projectPlayer(float worldZ, float offsetX);
 
@@ -76,19 +72,28 @@ class Player
            int frameHeight,
            int frames,
            float startZ,
-           sf::Keyboard::Key LeftKey,
-          sf::Keyboard::Key RightKey,int ID);
+          sf::Keyboard::Key LeftKey,
+          sf::Keyboard::Key RightKey,int ID
+        );
 
     
     void update(float dt);
     void draw(sf::RenderWindow &window);
-
+        //Health/score/collision
     int getHealth() const;
     int getScore() const;
+
     void takeDamage(int dmg);
+    void addHealth(int life);
+    void poison(float dt);
+    void loseControl(float dt);
+
     float getWorldZ() const;
     void addScore(int value);
     bool Invincible() const;
+    void addPowerUp(PowerType type);
+    bool hasPowerUp() const;
+    PowerType usePowerUp();
     sf::FloatRect getBounds() const;
 
 };

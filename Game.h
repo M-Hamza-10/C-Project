@@ -4,13 +4,18 @@
 #include <SFML\System.hpp>
 #include <SFML\Window.hpp>
 #include <SFML\Network.hpp>
+#include <iostream>
 #include "map.h"
 #include "player.h"
 #include "obstacles.h"
+#include "Powerup.h"
 
-
-
-
+enum class GameState
+{
+    Start,
+    Playing,
+    GameOver
+};
 class Game
 {
     private:
@@ -20,7 +25,9 @@ class Game
     Player *player1;
     Player *player2;
     obstacles* Obstacle;
-
+    Powers* power;
+    PowerType  icon;
+    
     sf::RenderWindow* Window;
     sf::Event event;
     sf::Clock deltaClock;
@@ -40,8 +47,20 @@ class Game
     void initMap();
     void initPlayer1();
     void initobstacles();
+    void initPowerup();
+    void applyPowerUp(PowerType type, Player& target , int id , float dt);
+
+   
 
     public:
+
+    GameState state = GameState::Start;
+    //Monster Deploy Variables
+    float roadLeft  = -250.f;
+    float roadRight = 250.f;
+    float spawnZMin = 200.f;
+    float spawnZMax = 400.f;
+    
     //constructors
     Game();
     //Destructor
@@ -50,16 +69,29 @@ class Game
     void update();
     void render();
     const bool running() const;
-
     void pollEvents();
+    
     sf::Font font;
 
     sf::Text p1HealthText;
     sf::Text p2HealthText;
     sf::Text p1ScoreText;
     sf::Text p2ScoreText;
+    sf::Text startText;
+    sf::Text gameOverText;
+    sf::Text winnertext;
+
+    //sf::Music bgMusic; //No background music as of now
+    sf::SoundBuffer lightBuffer;
+    sf::SoundBuffer HealBuffer;
+    sf::Sound lightS;
+    sf::Sound HealS;
+
+    sf::Texture Main;
+    sf::Sprite menu;
 
     void initText();
+    void initSound();
 
 
     //Variables
