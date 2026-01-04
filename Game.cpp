@@ -9,10 +9,6 @@ Game::Game()
     this->initText();
     this->initPowerup();
     this->initSound();
-    Main.loadFromFile("Sprites/Map/Mainmenu.png");
-    menu.setTexture(Main);
-    menu.setPosition(-150,0);
-    
     
     srand(static_cast<unsigned>(time(nullptr)));
 
@@ -74,8 +70,20 @@ void Game::pollEvents()
             case sf::Event::KeyPressed:
                 if(this->event.key.code==sf::Keyboard::Escape)
                     this->Window->close();
-                break;
 
+                if (this->event.key.code == sf::Keyboard::P)
+                {   
+                    Button.play();
+                    if (state == GameState::Playing){
+                        state = GameState::Pause;
+                        
+                    }
+                    else if (state == GameState::Pause){
+                        state = GameState::Playing;
+                    }
+                    handleMusic();
+                }
+                break;
         }
     }
 }
@@ -125,19 +133,48 @@ void Game::initText()
 
     startText.setFont(font);
     startText.setString("PRESS SPACE TO START");
-    startText.setCharacterSize(40);
-    startText.setFillColor(sf::Color::White);
-    startText.setPosition(80.f, 350.f);
+    startText.setCharacterSize(20);
+    startText.setFillColor(sf::Color::Black);
+    startText.setPosition(160.f, 370.f);
 
 
     gameOverText.setFont(font);
-    gameOverText.setString("                    GAME OVER\nPRESS SPACE TO RESTART");//5 tab
+    gameOverText.setString("                   GAME OVER\nPRESS SPACE TO RESTART");//5 tab
     gameOverText.setCharacterSize(40);
-    gameOverText.setFillColor(sf::Color::Magenta);
+    gameOverText.setFillColor(sf::Color::Red);
     gameOverText.setPosition(50.f, 230.f);
+
+    Pausetext.setFont(font);
+    Pausetext.setString("  PAUSED\n\n");//5 tab
+    Pausetext.setCharacterSize(40);
+    Pausetext.setFillColor(sf::Color(255,223,128));
+    Pausetext.setPosition(180.f, 230.f);
+
+    Pausetext2.setFont(font);
+    Pausetext2.setString("Press P   -   Resume \n\n ESC     -   Quit");//5 tab
+    Pausetext2.setCharacterSize(25);
+    Pausetext2.setFillColor(sf::Color::Green);
+    Pausetext2.setPosition(180.f, 300.f);
+
+    Main.loadFromFile("Sprites/Map/Mainmenu.png");
+    menu.setTexture(Main);
+    menu.setPosition(0,50);//-150,0
+    menu.setScale(0.7f,0.7f);
     
+    pause.setFillColor(sf::Color(0,0,0));
+    pause.setPosition(80,133);//180,133
+    pause.setScale(1.f,1.f);
+    pause.setSize(sf::Vector2f(400.f, 500.f));
 
+    P.loadFromFile("Sprites/Map/Button-P.png");
+    P1.setTexture(P);
+    P1.setPosition(180.f,300.f);
+    P1.setScale(0.3f,0.3f);
 
+    ESC.loadFromFile("Sprites/Map/Button-Q.png");
+    ESC1.setTexture(ESC);
+    ESC1.setPosition(220.f,410.f);
+    ESC1.setScale(0.3f,0.3f);
 }
 
 void Game::initSound()
@@ -146,6 +183,14 @@ void Game::initSound()
     lightS.setBuffer(lightBuffer);
     HealBuffer.loadFromFile("Sprites/Healing.wav");
     HealS.setBuffer(HealBuffer);
+    mainmenu.openFromFile("Sprites/Mainmenu2.ogg");
+    mainmenu.setVolume(60.f);
+    bgMusic.openFromFile("Sprites/Gameplay.ogg");
+     bgMusic.setVolume(20.f);
+    click.loadFromFile("Sprites/menu-click.wav");
+    Button.setBuffer(click);
+   
+
 }
 
 void Game::applyPowerUp(PowerType type, Player& target , int id , float dt){
@@ -185,7 +230,7 @@ void Game::applyPowerUp(PowerType type, Player& target , int id , float dt){
                 power->light.setScale(0.8f, 0.8f);
                 power->lighted = true;
                 lightS.play();
-                lightS.setVolume(7);
+                lightS.setVolume(27);
             }
             else if(id == 2){
                 sf::FloatRect pb =player1->getBounds();
@@ -197,7 +242,7 @@ void Game::applyPowerUp(PowerType type, Player& target , int id , float dt){
                 power->light.setScale(0.8f, 0.8f);
                 power->lighted = true;
                 lightS.play();
-                lightS.setVolume(7);
+                lightS.setVolume(27);
             }
             if(id == 1)
                 player1->addScore(20);
@@ -225,16 +270,27 @@ void Game::update()
     this-> pollEvents();
     float dt = deltaClock.restart().asSeconds();
     if (state == GameState::Start)
-    {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-    {
-        state = GameState::Playing;
-    }
+    {   
+        textTimer += dt;
+        if(textTimer > 0.5f){
+            startText.setFillColor(sf::Color(0,0,0,64));
+            if(textTimer > 1.5f){
+                startText.setFillColor(sf::Color(0,0,0));
+                textTimer = 0.f;
+            }
+        handleMusic();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        {   
+            Button.play();
+            state = GameState::Playing;
+            handleMusic();
+        }
     return;
     }
+
     if ((player1->getHealth() <= 0 || player2->getHealth() <= 0) || (player1->getScore() >= 99 || player2->getScore() >= 99))
     {
-    
     state = GameState::GameOver;
     }
 
@@ -242,21 +298,22 @@ void Game::update()
     {   
         if(player1->getHealth() <= 0 || player2->getScore() >= 100){
         winnertext.setFont(font);
-        winnertext.setString("                  Player 2 Wins!");//5 tab
+        winnertext.setString("                 Player 2 Wins!");//5 tab
         winnertext.setCharacterSize(40);
-        winnertext.setFillColor(sf::Color::Black);
+        winnertext.setFillColor(sf::Color::Yellow);
         winnertext.setPosition(50.f, 330.f);
         }
         else if(player2->getHealth() <= 0 || player1->getScore() >= 100){
         winnertext.setFont(font);
-        winnertext.setString("                  Player 1 Wins!");//5 tab
+        winnertext.setString("                 Player 1 Wins!");//5 tab
         winnertext.setCharacterSize(40);
-        winnertext.setFillColor(sf::Color::Black);
+        winnertext.setFillColor(sf::Color::Yellow);
         winnertext.setPosition(50.f, 330.f);
         }
-        // bgMusic.stop();
+        handleMusic();
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
         {   
+            Button.play();
             delete this->Obstacle;
             delete this->power;
             initPlayer1();
@@ -266,11 +323,12 @@ void Game::update()
             initPowerup();
             initSound();
             state = GameState::Playing;
-            // bgMusic.play();
+            handleMusic();
         }
     return;
     }
 
+    if(state == GameState::Playing){
     this-> Map->update(dt);
     
     this->player1->update(dt);
@@ -312,12 +370,39 @@ void Game::update()
     float p2HealthPercent = player2->getHealth() / 100.f;
     p1HealthFront.setSize({200.f * p1HealthPercent, 20.f});
     p2HealthFront.setSize({200.f * p2HealthPercent, 20.f});
-
+    }
 
 }
+void Game::handleMusic()
+{   
+    if(state == lastState)
+        return;
+    // Stop everything first
+    bgMusic.stop();
+    mainmenu.stop();
+
+    if (state == GameState::Start || state == GameState::Pause || state == GameState::GameOver)
+    {
+        if (mainmenu.getStatus() != sf::Music::Playing)
+        {
+            mainmenu.setLoop(true);
+            mainmenu.play();
+        }
+    }
+    else if (state == GameState::Playing)
+    {
+        if (bgMusic.getStatus() != sf::Music::Playing)
+        {
+            bgMusic.setLoop(true);
+            bgMusic.play();
+        }
+    }
+    lastState = state;
+}
+
 void Game::render()
 {
-    this->Window->clear(sf::Color(255,155,100));
+    this->Window->clear(sf::Color(0,0,0,0));
     this->Window->setView(this->Window->getDefaultView());
     //dereference the window
     this->Map->draw(*Window);
@@ -326,9 +411,15 @@ void Game::render()
         Window->draw(menu); 
         Window->draw(startText);
     }
-
+    else if (state == GameState::Pause){
+            Window->draw(pause);
+            Window->draw(Pausetext);
+            // Window->draw(Pausetext2);
+            Window->draw(P1);
+            Window->draw(ESC1);
+    }
     else if (state == GameState::Playing)
-    {
+    {   
         this->Obstacle->draw(*Window);
         this->power->draw(*Window);
         int r = rand() % 10;
@@ -354,6 +445,7 @@ void Game::render()
         // Player 2 health bar
         Window->draw(p2HealthBack);
         Window->draw(p2HealthFront);
+
     }
     else if (state == GameState::GameOver){
         Window->draw(gameOverText);

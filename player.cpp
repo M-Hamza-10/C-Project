@@ -74,7 +74,7 @@ void Player::update(float dt)
         visible = !visible;
 
         sf::Color colour = player.getColor();
-        colour.a = visible ? 255 : 80; // alpha
+        colour.a = visible ? 255 : 80; // a-alpha controlling opacity
         player.setColor(colour);
     }
 
@@ -87,8 +87,10 @@ void Player::update(float dt)
     //Controls the poison movement
     if(poisoned){
         poison_timer+=dt;
-        if(poison_timer > 3.f)
+        
+        if(poison_timer > 3.f){
             poisoned = false;
+        }
     }
 
     //Controls the player movement when it is confused
@@ -147,7 +149,7 @@ sf::Vector2f Player::projectPlayer(float worldZ, float offsetX)
     // 2. Fake 3D X: center + offset
     float x = Map->perspectiveX + offsetX;
     
-    // 3. Use your existing perspective system!
+
     return Map->transformPerspective(x, y);
 }
 

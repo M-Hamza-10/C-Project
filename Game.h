@@ -14,7 +14,9 @@ enum class GameState
 {
     Start,
     Playing,
-    GameOver
+    GameOver,
+    Pause,
+    NILL
 };
 class Game
 {
@@ -49,8 +51,7 @@ class Game
     void initobstacles();
     void initPowerup();
     void applyPowerUp(PowerType type, Player& target , int id , float dt);
-
-   
+    GameState lastState = GameState::NILL;
 
     public:
 
@@ -60,7 +61,7 @@ class Game
     float roadRight = 250.f;
     float spawnZMin = 200.f;
     float spawnZMax = 400.f;
-    
+    float textTimer= 0.f;
     //constructors
     Game();
     //Destructor
@@ -80,18 +81,31 @@ class Game
     sf::Text startText;
     sf::Text gameOverText;
     sf::Text winnertext;
+    sf::Text Pausetext;
+    sf::Text Pausetext2;
+
+    sf::RectangleShape pause;
+    sf::Texture P;
+    sf::Texture ESC;
+    sf::Sprite P1;
+    sf::Sprite ESC1;
 
     //sf::Music bgMusic; //No background music as of now
     sf::SoundBuffer lightBuffer;
     sf::SoundBuffer HealBuffer;
     sf::Sound lightS;
     sf::Sound HealS;
+    sf::SoundBuffer click;
+    sf::Sound Button;
+    sf::Music mainmenu;
+    sf::Music bgMusic;
 
     sf::Texture Main;
     sf::Sprite menu;
 
     void initText();
     void initSound();
+    void handleMusic();
 
 
     //Variables

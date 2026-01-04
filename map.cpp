@@ -55,7 +55,7 @@ map::map(int winWidth, int winHeight)
     {
         sf::VertexArray line(sf::Lines, 2);
         vLines.push_back(line); // push_back() adds a new item to the end of a container.
-        // numbers.push_back(10); add 10 to numbers (must be a dynamic array)
+        // numbers.push_back(10); add 10 to numbers (must be a resizeable array)
     }
 
     // Pre-build horizontal lines
@@ -88,7 +88,7 @@ void map::generateGrid()
 
             addPerspectiveQuad(quads, x1, y1, x2, y2, nullptr);
 
-            // Apply perspective to 4 corners (correct!)
+           // Apply perspective to 4 corners 
             sf::Vector2f p1 = transformPerspective(x1, y1);
             sf::Vector2f p2 = transformPerspective(x2, y1);
             sf::Vector2f p3 = transformPerspective(x2, y2);
@@ -99,14 +99,15 @@ void map::generateGrid()
                     {0, 0},
                     {256, 0},
                     {256, 256},
-                    {0, 256}};
+                    {0, 256}
+                };
 
             quads.append(sf::Vertex(p1, texture[0]));
             quads.append(sf::Vertex(p2, texture[1]));
             quads.append(sf::Vertex(p3, texture[2]));
             quads.append(sf::Vertex(p4, texture[3]));
 
-            // Kivy-style fade
+            //Kivy-style fade
             float midY = (p1.y + p3.y) * 0.5f;
             float diff_y = perspectiveY - midY;
             float factor_y = diff_y / perspectiveY;
@@ -190,42 +191,42 @@ void map::update(float dt)
         offsetY -= spacingY;
     }
 
-    // BUILD VERTICAL LINES
-    int leftIndex = -V_NB_LINES / 2;
+    // // BUILD VERTICAL LINES 
+    // int leftIndex = -V_NB_LINES / 2;
 
-    for (int i = 0; i < V_NB_LINES; i++)
-    {
-        float rawX = (leftIndex + i) * (V_SPACING * winWidth) + offsetX;
+    // for (int i = 0; i < V_NB_LINES; i++)
+    // {
+    //     float rawX = (leftIndex + i) * (V_SPACING * winWidth) + offsetX;
 
-        float worldX = perspectiveX + rawX;
+    //     float worldX = perspectiveX + rawX;
 
-        sf::Vector2f farPoint = transformPerspective(worldX, winHeight); // top of screen
-        sf::Vector2f nearPoint = transformPerspective(worldX, -50);      // bottom
+    //     sf::Vector2f farPoint = transformPerspective(worldX, winHeight); // top of screen
+    //     sf::Vector2f nearPoint = transformPerspective(worldX, -50);      // bottom
 
-        vLines[i][0].position = farPoint;
-        vLines[i][1].position = nearPoint;
+    //     vLines[i][0].position = farPoint;
+    //     vLines[i][1].position = nearPoint;
 
-        vLines[i][0].color = sf::Color(0,0,0,0);
-        vLines[i][1].color = sf::Color(0,0,0,0);
-    }
+    //     vLines[i][0].color = sf::Color(0,0,0,0);
+    //     vLines[i][1].color = sf::Color(0,0,0,0);
+    // }
 
-    // BUILD HORIZONTAL LINES
-    for (int i = 0; i < H_NB_LINES; i++)
-    {
-        float lineY = (i * H_SPACING * winHeight) - offsetY;
+    // // BUILD HORIZONTAL LINES
+    // for (int i = 0; i < H_NB_LINES; i++)
+    // {
+    //     float lineY = (i * H_SPACING * winHeight) - offsetY;
 
-        float leftX = perspectiveX - V_SPACING * winWidth * (V_NB_LINES / 2);
-        float rightX = (perspectiveX - 400) + V_SPACING * winWidth * (V_NB_LINES / 2);
+    //     float leftX = perspectiveX - V_SPACING * winWidth * (V_NB_LINES / 2);
+    //     float rightX = (perspectiveX - 400) + V_SPACING * winWidth * (V_NB_LINES / 2);
 
-        auto leftPoint = transformPerspective(leftX, lineY);
-        auto rightPoint = transformPerspective(rightX, lineY);
+    //     auto leftPoint = transformPerspective(leftX, lineY);//vector 2f
+    //     auto rightPoint = transformPerspective(rightX, lineY);
 
-        hLines[i][0].position = leftPoint;
-        hLines[i][1].position = rightPoint;
+    //     hLines[i][0].position = leftPoint;
+    //     hLines[i][1].position = rightPoint;
 
-        hLines[i][0].color = sf::Color(0,0,0,0); // Transparent lines
-        hLines[i][1].color = sf::Color(0,0,0,0);
-    }
+    //     hLines[i][0].color = sf::Color(0,0,0,0); // Transparent lines
+    //     hLines[i][1].color = sf::Color(0,0,0,0);
+    // }
     // Calling the generate frid function
     generateGrid();
 

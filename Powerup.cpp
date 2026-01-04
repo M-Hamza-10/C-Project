@@ -123,7 +123,7 @@ void Powers::checkPickup(Player &player, float dt)
                 smoke.setScale(1.5f, 1.5f);
                 smoke.setColor(sf::Color(255,255,255,200));
                 monsterS.play();
-                monsterS.setVolume(10);
+                monsterS.setVolume(30);
         
                 continue;
                 
@@ -144,7 +144,7 @@ void Powers::checkPickup(Player &player, float dt)
 
 void Powers::update(float dt, const int window)
 {
-    //Randomly spawns the obstacle
+    //Randomly spawns the powerup
     randomSpawn();
     
     if (smoked)
@@ -194,7 +194,7 @@ void Powers::update(float dt, const int window)
 
     }
 
-    //Moves the obstacle forward
+    //Moves the powerup icon forward
     for (auto& s : powerup){
     // Move forward in WORLD space
     s.worldZ -= speed * dt;

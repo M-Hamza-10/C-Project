@@ -97,7 +97,7 @@ void obstacles::collisonDetection(Player& player , float dt)
         float PlayerZ = player.getWorldZ();
         const float collisionRange = 30.f; // 
 
-        for (auto i = sprite.begin(); i != sprite.end(); )
+        for (auto i = sprite.begin(); i != sprite.end(); ) //std vector
     {
         if (i->worldZ < PlayerZ)
         {
@@ -118,7 +118,7 @@ void obstacles::collisonDetection(Player& player , float dt)
             if(i->type == ObstacleType::Spike){
             player.takeDamage(5); //Take damage function in player.cpp
             spikeS.play();
-            spikeS.setVolume(40);
+            spikeS.setVolume(60);
             }
 
             else if(i-> type == ObstacleType::Snake){
@@ -126,13 +126,13 @@ void obstacles::collisonDetection(Player& player , float dt)
             player.takeDamage(10);
             player.poison(dt);
             snakeS.play();
-            snakeS.setVolume(10);
+            snakeS.setVolume(30);
             }
             else if(i->type == ObstacleType::Confusing){
                 player.loseControl(dt);
                 //confuseS.setLoop(true); For continuous playing of sound
                 confuseS.play();
-                confuseS.setVolume(1);
+                confuseS.setVolume(7);
             }            
             
             // Remove trap so it doesn't hit again

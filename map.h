@@ -46,7 +46,7 @@ public:
     int winHeight;
 
     // number of lines and spacing
-    const int V_NB_LINES = 16;       // number of vertical lines  4x 0.5 = 2f
+    const int V_NB_LINES = 16;       // number of vertical lines  16x 0.4 = 6.4f
     const float V_SPACING = 0.4f; // horizontal spacing between lines
 
     const int H_NB_LINES = 30;   // number of horizontal lines

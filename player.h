@@ -54,7 +54,7 @@ class Player
     int frameCount ;
     int currentFrame = 0;
     float animTimer = 0.f;
-    float animSpeed = 0.08f; // smaller = faster
+    float animSpeed = 0.04f; // smaller = faster
     int moveSpeed;
 
     void animatePlayer(float dt);
